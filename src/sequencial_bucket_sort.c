@@ -77,7 +77,7 @@ int main(void) {
 
   print(array, N);
 
-  printf("Time: %f\n", t2-t1)
+  printf("Time: %f\n", t2-t1);
 
   return 0;
 }

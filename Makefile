@@ -1,3 +1,7 @@
+CC = gcc
+
+CFLAGS = -std=c99 -O2 -fopenmp -g -Wall
+
 all: 
-	gcc -O2 -g -o sequencial src/sequencial_bucket_sort.c
-	gcc -O2 -g -o parallel src/parallel_bucket_sort.c
+	$(CC) -o sequencial $(CFLAGS) src/sequencial_bucket_sort.c
+	$(CC) -o parallel $(CFLAGS) src/parallel_bucket_sort.c

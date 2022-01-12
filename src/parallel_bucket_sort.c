@@ -29,24 +29,23 @@ void bucketSort(int arr[], int N, int M) {
   struct node * buckets = (struct node *) malloc(sizeof(struct node) * M);
 
   // Inicializar buckets vazios
-  #pragma omp for
+  #pragma omp parallel for
   for(i=0; i<M; i++) {
     buckets[i].size = 0;
     buckets[i].list = NULL;
   }
 
   // Adicionar elementos aos buckets
-  #pragma omp for
+  #pragma omp parallel for
   for(i=0; i<N; i++) {
     index = arr[i]/size - 1;
-    #pragma omp critical {
-        buckets[index].list = realloc(buckets[index].list, sizeof(int) * (buckets[index].size + 1));
-        buckets[index].list[buckets[index].size++] = arr[i];
-    }
+    #pragma omp critical
+    buckets[index].list = realloc(buckets[index].list, sizeof(int) * (buckets[index].size + 1));
+    buckets[index].list[buckets[index].size++] = arr[i];
   }
 
   // Ordenar os buckets
-  #pragma omp for
+  #pragma omp parallel for
   for(i=0; i<M; i++) {
     qsort(buckets[i].list, buckets[i].size, sizeof(int), compare);
   }
