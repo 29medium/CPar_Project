@@ -8,24 +8,40 @@ struct node {
   int* list;
 };
 
-int compare (const void * a, const void * b) {
- return ( *(int*)a - *(int*)b );
+void swap(int *a, int *b) {
+  int t = *a;
+  *a = *b;
+  *b = t;
 }
 
-int largest(int arr[], int n)
-{
-  int i, max = arr[0];
+int partition(int *array, int low, int high) {
+  int pivot = array[high];
+  int i = (low - 1), j;
 
-  for (i = 1; i < n; i++)      
-    if (arr[i] > max)
-      max = arr[i];
-
-  return max;
+  for (j = low; j < high; j++) {
+    if (array[j] <= pivot) {
+      i++;
+      swap(&array[i], &array[j]);
+    }
+  }
+  swap(&array[i + 1], &array[high]);
+  
+  return (i + 1);
 }
 
-void bucketSort(int arr[], int N, int M) {
+void quickSort(int *array, int low, int high) {
+  if (low < high) {
+    int pi = partition(array, low, high);
+    
+    quickSort(array, low, pi - 1);
+    
+    quickSort(array, pi + 1, high);
+  }
+}
+
+void bucketSort(int *arr, int N, int M, int W) {
   int i, j, k, index;
-  int size = largest(arr, N) / N;
+
   struct node * buckets = (struct node *) malloc(sizeof(struct node) * M);
 
   // Inicializar buckets vazios
@@ -36,14 +52,14 @@ void bucketSort(int arr[], int N, int M) {
 
   // Adicionar elementos aos buckets
   for(i=0; i<N; i++) {
-    index = arr[i]/size - 1;
+    index = arr[i]/W;
     buckets[index].list = realloc(buckets[index].list, sizeof(int) * (buckets[index].size + 1));
     buckets[index].list[buckets[index].size++] = arr[i];
   }
 
   // Ordenar os buckets
   for(i=0; i<M; i++) {
-    qsort(buckets[i].list, buckets[i].size, sizeof(int), compare);
+    quickSort(buckets[i].list, 0, buckets[i].size-1);
   }
 
   // Voltar a por no array original
@@ -54,30 +70,33 @@ void bucketSort(int arr[], int N, int M) {
   }
 }
 
-void print(int ar[], int N) {
+void print(int* arr, int N) {
   int i;
-  for (i = 0; i < N; ++i) {
-    printf("%d ", ar[i]);
+  for (i = 0; i < N; i++) {
+    printf("%d ", arr[i]);
   }
   printf("\n");
 }
 
-int main(void) {
-  int N = 7;
-  int M = 7;
-  int array[7] = {42, 32, 33, 52, 37, 47, 51};
+int main(int argc, char** argv) {
+  if(argc != 3)
+    return -1;
 
-  print(array, N);
+  // Ir buscar argumentos
+  int N, M, W;
+  sscanf(argv[1], "%d", &N);
+  sscanf(argv[2], "%d", &W);
+  M = N/W;
 
-  float t1 =  omp_get_wtime();
+  // Gerar array aleatorio
+  int i;
+  int *arr = (int*) malloc(sizeof(int) * N);
+  for(i=0; i<N; i++) {
+    arr[i] = rand() % N;
+  }
 
-  bucketSort(array, N, M);
+  // Correr bucketSort
+  bucketSort(arr, N, M, W);
   
-  float t2 =  omp_get_wtime();
-
-  print(array, N);
-
-  printf("Time: %f\n", t2-t1);
-
   return 0;
 }
