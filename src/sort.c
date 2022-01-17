@@ -51,15 +51,13 @@ void bucketSort(int *arr, int N, int M, int W)
 
 	struct node *buckets = (struct node *)malloc(sizeof(struct node) * M);
 
-	// Inicializar buckets vazios
-#pragma omp parallel for schedule(static)
+#pragma omp parallel for
 	for (i = 0; i < M; i++)
 	{
 		buckets[i].size = 0;
 		buckets[i].list = NULL;
 	}
 
-	// Adicionar elementos aos buckets
 	for (i = 0; i < N; i++)
 	{
 		index = arr[i] / W;
@@ -67,7 +65,6 @@ void bucketSort(int *arr, int N, int M, int W)
 		buckets[index].list[buckets[index].size++] = arr[i];
 	}
 
-	// Ordenar os buckets
 #pragma omp parallel for schedule(dynamic)
 	for (i = 0; i < M; i++)
 	{
@@ -75,8 +72,7 @@ void bucketSort(int *arr, int N, int M, int W)
 
 	}
 
-	// Voltar a por no array original
-#pragma omp parallel for schedule(static) private(size)
+#pragma omp parallel for private(size)
 	for (i = 0; i < M; i++)
 	{
 		size = 0;
@@ -89,13 +85,6 @@ void bucketSort(int *arr, int N, int M, int W)
 		}
 		
 	}
-	// for (i = 0, j = 0; i < M; i++)
-    // {
-    //     for (k = 0; k < buckets[i].size; k++)
-    //     {
-    //         arr[j++] = buckets[i].list[k];
-    //     }
-    // }
 }
 
 void print(int *arr, int N)

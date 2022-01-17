@@ -1,13 +1,13 @@
 #!/bin/bash
 #SBATCH --partition=cpar
-#SBATCH --ntasks=1
+#SBATCH --ntasks=64
 
 module load papi/5.4.1
 module load gcc/5.3.0
 module load gcc/7.2.0
 
 export OMP_PROC_BIND=true
-export OMP_NUM_THREADS=32
+export OMP_NUM_THREADS=64
 
 make
 

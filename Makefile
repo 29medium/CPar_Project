@@ -15,7 +15,7 @@ CCFLAGS = -O3 -Wall -Wextra -fno-omit-frame-pointer -g -I/share/apps/papi/5.4.1/
 CCC = gcc 
 
 # libraries
-LIBS = -fopenmp -lm
+LIBS = -fopenmp -lm -lpapi
 
 .SUFFIXES: .cpp .c 
 
