@@ -1,0 +1,20 @@
+rm -f src/*.o *~ Makefile.bak sort
+gcc  -o sort -O3 -Wall -Wextra -fno-omit-frame-pointer -g -I/share/apps/papi/5.4.1/include -L/share/apps/papi/5.4.1/lib src/sort.c -fopenmp -lm 
+N: 10000000, M: 10, W: 1000000
+Time: 0.335267
+N: 10000000, M: 100, W: 100000
+Time: 0.800756
+N: 10000000, M: 1000, W: 10000
+Time: 2.368484
+N: 100000000, M: 10, W: 10000000
+Time: 4.271391
+N: 100000000, M: 100, W: 1000000
+Time: 3.311736
+N: 100000000, M: 1000, W: 100000
+Time: 49.333113
+N: 1000000000, M: 10, W: 100000000
+Time: 93.246680
+N: 1000000000, M: 100, W: 10000000
+Time: 38.354719
+N: 1000000000, M: 1000, W: 1000000
+Time: 81.344669

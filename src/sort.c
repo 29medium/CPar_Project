@@ -137,7 +137,5 @@ int main(int argc, char **argv)
 	printf("N: %d, M: %d, W: %d\n", N,M,W);
 	printf("Time: %f\n", end-start);
 
-	print(arr, N);
-
 	return 0;
 }
