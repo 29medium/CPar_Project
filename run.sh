@@ -1,14 +1,19 @@
 #!/bin/bash
-#SBATCH --time=1:00
+#SBATCH --time=10:00
 #SBATCH --partition=cpar
-#SBATCH --ntasks=5
+#SBATCH --ntasks=16
 
-MY=/home/pg47556/CPar_Project
+module load papi/5.4.1
+module load gcc/5.3.0
+module load gcc/7.2.0
+
+export OMP_PROC_BIND=true
+export OMP_NUM_THREADS=16
+
+
 N=100000000
-W=1000000
+W=10000000
 
 make
 
-module load papi/5.4.1
-
-time $MY/sort $N $W
+./sort $N $W

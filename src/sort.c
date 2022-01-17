@@ -41,20 +41,18 @@ void quickSort(int *array, int low, int high)
 		int pi = partition(array, low, high);
 
 		quickSort(array, low, pi - 1);
-
 		quickSort(array, pi + 1, high);
 	}
 }
 
 void bucketSort(int *arr, int N, int M, int W)
 {
-	int i, j, k, index;
+	int i, k, j, size, index;
 
 	struct node *buckets = (struct node *)malloc(sizeof(struct node) * M);
 
 	// Inicializar buckets vazios
-#pragma omp parallel
-#pragma omp for
+#pragma omp parallel for schedule(static)
 	for (i = 0; i < M; i++)
 	{
 		buckets[i].size = 0;
@@ -70,21 +68,34 @@ void bucketSort(int *arr, int N, int M, int W)
 	}
 
 	// Ordenar os buckets
-#pragma omp parallel
-#pragma omp for
+#pragma omp parallel for schedule(dynamic)
 	for (i = 0; i < M; i++)
 	{
 		quickSort(buckets[i].list, 0, buckets[i].size - 1);
+
 	}
 
 	// Voltar a por no array original
-	for (i = 0, j = 0; i < M; i++)
+#pragma omp parallel for schedule(static) private(size)
+	for (i = 0; i < M; i++)
 	{
+		size = 0;
+		for(j = 0; j < i; j++)
+			size += buckets[j].size;
+
 		for (k = 0; k < buckets[i].size; k++)
 		{
-			arr[j++] = buckets[i].list[k];
+			arr[size+k] = buckets[i].list[k];
 		}
+		
 	}
+	// for (i = 0, j = 0; i < M; i++)
+    // {
+    //     for (k = 0; k < buckets[i].size; k++)
+    //     {
+    //         arr[j++] = buckets[i].list[k];
+    //     }
+    // }
 }
 
 void print(int *arr, int N)
@@ -99,6 +110,7 @@ void print(int *arr, int N)
 
 int main(int argc, char **argv)
 {
+	double start, end;
 	if (argc != 3)
 		return -1;
 
@@ -117,8 +129,15 @@ int main(int argc, char **argv)
 		arr[i] = rand() % N;
 	}
 
+	start = omp_get_wtime();
 	// Correr bucketSort
 	bucketSort(arr, N, M, W);
+	end = omp_get_wtime();
+
+	printf("N: %d, M: %d, W: %d\n", N,M,W);
+	printf("Time: %f\n", end-start);
+
+	print(arr, N);
 
 	return 0;
 }
